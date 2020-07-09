@@ -5,3 +5,17 @@
 
 *.slxc
 
+
+*.gz
+
+*.out
+
+*.fls
+
+*.log
+
+*.aux
+
+*.fdb_latexmk
+
+Latex/Eric_Kern.pdf

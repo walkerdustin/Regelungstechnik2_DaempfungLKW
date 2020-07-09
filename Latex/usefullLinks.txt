@@ -1,0 +1,2 @@
+Latex Encoding VSCODE
+use iso-8859-1
