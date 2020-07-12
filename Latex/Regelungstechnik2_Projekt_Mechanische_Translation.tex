@@ -6,23 +6,38 @@
 \documentclass[a4paper, 10pt]{IEEEtran}
 
 %%% You can add the packages you may need
-\usepackage[bookmarksopenlevel=1, colorlinks=true, allcolors=black, unicode]{hyperref}
+\usepackage[pdftex,
+			bookmarksopenlevel=1
+			colorlinks,
+			linkcolor = black,
+			citecolor = black]{hyperref}
 \usepackage[cmyk, hyperref, table]{xcolor}
-\usepackage{graphicx}
+\usepackage{ngerman}            %Neue Rechtschreibung
+\usepackage{graphicx}           %Graphiken einbinden
 
+\usepackage{bibgerm}
+\usepackage[latin1]{inputenc}   %Verwenden von \"{o} \"{a} \"{u} {\ss}
 
-	\title{Regelung eines Dämpfersystems für einen LKW}% Der Titel
-	\author{Dustin Walker (763190)% Name und (Matrikel-Nr.)
-			-- School of Engineering, Mechatronics Bachelor % Studiengang
-			\thanks{Diese Hausarbeit wird in die eingereichte Fassung als Grundlage für die Benurteilung 
-		            der Prüfungsleistung für die Prüfung
-	            	60040099 % Prüfungsnummer
-	            	Regelungstechnik 2. %Prüfungsname
-            	 	Der/Die Autor/Autorin versichert, dass dies sein/ihr eigenen Werk ist und alle entnommene Teile anderer Werke richtig zitiert sind.
-             		}}
-	\markboth
-		{Regelungstechnik 2}% Bitte hier das Fach einfügen (Subject)
-		{Prüfungsnummer 60040231}% Bitte hier deine Prüfungsnummer einfügen (aus dem HIP)
+\usepackage{siunitx}			%für \SI{}{}
+\usepackage{amsmath}			%for multiline environment eqn
+
+\sisetup{ 
+	locale = DE ,
+	per-mode = symbol 
+}
+
+\title{Regelung eines Dämpfersystems für einen LKW}% Der Titel
+\author{Dustin Walker (763190)% Name und (Matrikel-Nr.)
+		-- School of Engineering, Mechatronics Bachelor % Studiengang
+		\thanks{Diese Hausarbeit wird in die eingereichte Fassung als Grundlage für die Benurteilung 
+				der Prüfungsleistung für die Prüfung
+				60040099 % Prüfungsnummer
+				Regelungstechnik 2. %Prüfungsname
+				Der/Die Autor/Autorin versichert, dass dies sein/ihr eigenen Werk ist und alle entnommene Teile anderer Werke richtig zitiert sind.
+				}}
+\markboth
+	{Regelungstechnik 2}% Bitte hier das Fach einfügen (Subject)
+	{Prüfungsnummer 60040231}% Bitte hier deine Prüfungsnummer einfügen (aus dem HIP)
 
 
 \begin{document}
@@ -34,6 +49,11 @@
 	\begin{thebibliography}{1em}
 		\bibitem{scientificMethod} Wikipedia, ``The scientific method'', online, \url{https://en.wikipedia.org/wiki/		 
 		Scientific_method}, accessed 20.4.2020.
+		\bibitem{karlsruherPT2Glied} Hochschule Karlsruhe, ``Übertragungsglieder der Regelungstechnik'', online,
+		\url{https://www.eit.hs-karlsruhe.de/mesysto/teil-a-zeitkontinuierliche-signale-und-systeme/uebertragungsglieder-der-regelungstechnik/zusammengesetzte-uebertragungsglieder/pt2-glied.html},
+		accessed 11.07.2020.
+		\bibitem{Zylinder} https://www.hydrauliktechnik24.de/, Webshop für Hydraulikzylinder, online, \url{https://www.hydrauliktechnik24.de/Hydraulikzylinder-einfachwirkend-60-er-Stange-900-Hub-EBL-1022}
+		accessed 11.07.2020.
 	\end{thebibliography}
 
 \end{document}

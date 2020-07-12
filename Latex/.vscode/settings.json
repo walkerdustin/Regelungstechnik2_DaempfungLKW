@@ -1,3 +1,10 @@
 {
-    "cSpell.language": ",de"
+    "cSpell.language": ",de",
+    "[latex]": {
+        "files.encoding": "iso88591",
+        "editor.defaultFormatter": "James-Yu.latex-workshop"
+    },
+    "cSpell.words": [
+        "simulink"
+    ]
 }

@@ -1,35 +1,42 @@
 	
 	\begin{abstract} %Hier kommt eine Zusammenfassung des Projektes
-		Es soll der Ladebereich eines LKWs aktiv gedÃ¤mpft werden. Um das System simulieren zu kÃ¶nnen wird das System in Simulink nachgebaut. Anhand dieses Models soll nun 
+		Es soll der Ladebereich eines LKWs aktiv gedämpft werden. Um das System simulieren zu können wird das System in Simulink nachgebaut. Anhand dieses Models soll nun 
 		ein Regler entworfen und parametrisiert werden. Es soll ein digitaler Regler benutzt werden. 
-		HierfÃ¼r muss noch zusÃ¤tzlich ein Anti Aliasing Filter designt werden.
+		Hierfür muss noch zusätzlich ein Anti Aliasing Filter designt werden.
 	\end{abstract}
+
+	\begin{figure}[h] 
+		\centering
+		   \includegraphics[width=0.45\textwidth]{Bilder/truckIcon.jpg}
+		\caption{kleiner LKW mit Laderaum}
+		\label{SimulinkStreckenModell}
+	\end{figure}
 	
 	\section{Einleitung}
-	Wenn der Laderaum eines Lkws voll geladen ist und Ã¼ber eine LandstraÃŸe bretter, dann kann es doch schon mal etwas holprig werden. Das ist nicht nur fÃ¼r den Fahrer unangenehm. Es kann auch gefÃ¤hrlich fÃ¼r den LKW und seine Ladung werden.
-	Eine zu hart eingestellte Federung kann Unebenheiten nicht ausgleichen, so wird die Ladung und das Fahrwerk nicht geschÃ¼tzt. Wenn die Federung zu weich eingestellt ist kann es 
-	wiederum zu schwingungen fÃ¼hren. Um dies zu vermeiden wird eine DÃ¤mpfung verwendet. Hierbei wird zusÃ¤tzlich zu einer Feder mit der Federkonstanten $K$ ein DÃ¤mpfer mit der DÃ¤mpfungskonstanten $\mu$ verwendet. 
-	Diese beiden Parameter kÃ¶nnen nun genau auf die Masse $m$ des LKW und die zu erwartenden Unebenheiten abgestimmt werden. 
-	Wenn sich nun aber die Masse Ã¤ndert, zum Beispiel beim be- und entladen, stimmt das Verhalten der Feder und des DÃ¤mpfers nicht mehr.
-	Da sich diese Parameter nicht einfach Ã¤ndern lassen, wird ein aktives DÃ¤mpfungssystem verwendet. Hier wird zusÃ¤tzlich zu der Feder und dem DÃ¤mpfer 
-	auch ein, meist pneumatischer aktuator verwendet. Der Aktuator soll stÃ¶rungen entgegenwirken und den Ladebereich auf einer Bestimmten hÃ¶he halten.
-	Die Kraft $F$ ist die StellgrÃ¶ÃŸe in unserem Regelkreis.
+	Wenn der Laderaum eines Lkws voll geladen ist und über eine Landstraße bretter, dann kann es doch schon mal etwas holprig werden. Das ist nicht nur für den Fahrer unangenehm. Es kann auch gefährlich für den LKW und seine Ladung werden.
+	Eine zu hart eingestellte Federung kann Unebenheiten nicht ausgleichen, so wird die Ladung und das Fahrwerk nicht geschützt. Wenn die Federung zu weich eingestellt ist kann es 
+	wiederum zu schwingungen führen. Um dies zu vermeiden wird eine Dämpfung verwendet. Hierbei wird zusätzlich zu einer Feder mit der Federkonstanten $K$ ein Dämpfer mit der Dämpfungskonstanten $\mu$ verwendet. 
+	Diese beiden Parameter können nun genau auf die Masse $m$ des LKW und die zu erwartenden Unebenheiten abgestimmt werden. 
+	Wenn sich nun aber die Masse ändert, zum Beispiel beim be- und entladen, stimmt das Verhalten der Feder und des Dämpfers nicht mehr.
+	Da sich diese Parameter nicht einfach ändern lassen, wird ein aktives Dämpfungssystem verwendet. Hier wird zusätzlich zu der Feder und dem Dämpfer 
+	auch ein, meist pneumatischer aktuator verwendet. Der Aktuator soll störungen entgegenwirken und den Ladebereich auf einer Bestimmten höhe halten.
+	Die Kraft $F$ ist die Stellgröße in unserem Regelkreis.
 		
 	\section{Ziele des Projekts}
-	In dieser Arbeit soll der FÃ¼hrungsfall betrachtet werden. Die hÃ¶he des Laderaums soll also so geregelt werden, dass WunschhÃ¶he $x_{w}$ wÃ¤hrend der laufzeit geÃ¤ndert werden kann.
-	In der Praxis kann diese Funktion beim Be- und Entladen nÃ¼tzlich sein. Oft haben Laderampen eine unterschiedliche HÃ¶he. Der Bediener will den Ladebereich
-	beim Entladen auf die richtige HÃ¶he einstellen kÃ¶nnen. Die HÃ¶he soll dann wÃ¤hrend dem gesamten Entladeprozess die gleiche HÃ¶he beibehalten, auch wenn die Masse geringer wird.
-	Ein Einschwingen ist zu vermeiden. Der LKW sollte nicht mit der Ãœberdachung vor der Entladerampe kollidieren, also ist auch ein Ãœberschwinger zu vermeiden.
-	Die Schnelligkeit des Einregelvorgangs steht in diesem Fall nicht im Vordergrund. Die Einregelzeit ist maÃŸgeblich von der Kraft des Aktuators abhÃ¤ngig.
-	Diese sollte aus KostengrÃ¼nden so groÃŸ wie nÃ¶tig, aber so klein wie mÃ¶glich dimensioniert werden. 
+	In dieser Arbeit soll der Führungsfall betrachtet werden. Die höhe des Laderaums soll also so geregelt werden, dass Wunschhöhe $x_{w}$ während der laufzeit geändert werden kann.
+	In der Praxis kann diese Funktion beim Be- und Entladen nützlich sein. Oft haben Laderampen eine unterschiedliche Höhe. Der Bediener will den Ladebereich
+	beim Entladen auf die richtige Höhe einstellen können. Die Vorgabe soll sein, dass die Höhe $x$ auf 0 bis 1m eingestellt werden kann.
+
+	Der Laderaum soll während dem gesamten Entladeprozess die gleiche Höhe beibehalten, auch wenn die Masse geringer wird.
+	Ein Einschwingen ist zu vermeiden. Der LKW sollte nicht mit der Überdachung vor der Entladerampe kollidieren, also ist auch ein Überschwinger zu vermeiden.
+	Die Schnelligkeit des Einregelvorgangs steht in diesem Fall nicht im Vordergrund. Die Einregelzeit ist maßgeblich von der Kraft des Aktuators abhängig.
+	Diese sollte aus Kostengründen so groß wie nötig, aber so klein wie möglich dimensioniert werden. 
 	Es wird festgellegt, dass die Kraft des Aktuators (!! wie in Abb. dargestellt) nur nach oben wirkt. Aufgrund des Designs des pneumatischen Aktuators kann 
 	die Kraft nicht negativ werden.
 
 	Um diese Ziele zu erreichen, soll ein zeitdiskreter Regler mit den
 	richtigen Parametern entworfen werden. Dazu sind die
 	folgenden Schritte notwendig:
-
-
 
 	\begin{itemize}
 		\item Nachbauen des Systems in Matlab Simulink
@@ -40,41 +47,125 @@
 	\end{itemize}
 		
 	\section{Theorie}
-	Als erster Schritt soll die zu regelnde Strecke in Simulink modelliert werden. DafÃ¼r muss zunÃ¤chsteinmal die Differenzialgleichung aufgestellt werden.
+
+	\subsection{Nachbauen des Systems}
+
+	\begin{figure*}[hbt] 
+		\centering
+		   \includegraphics[width=1.0\textwidth]{Bilder/SimulinkStreckenModell.PNG}
+		\caption{Simulink Modell der Regelstrecke}
+		\label{SimulinkStreckenModell}
+	\end{figure*}
+
+	Als erster Schritt soll die zu regelnde Strecke in Simulink modelliert werden. Dafür muss zunächsteinmal die Differenzialgleichung aufgestellt werden.
 	Die Differenzialgleichung kann aus der Abbildung \ref{} abgeleitet werden. 
-	Nach dem Prinzip Aktio gleich Reaktio muss zu jedem Zeitpunkt ein KrÃ¤ftegleichgewicht herrschen.
-	$x$ Entspricht der HÃ¶he des Laderaums. Die positive x-Richtung zeigtnach oben. Die Feder wirkt mit der Kraft $F_{F} = K \cdot x$ nach oben. Der DÃ¤mpfer wirkt mit der Kraft 
-	$F_{R} = \mu \cdot \dot{x}$ entgegen der Bewegungsrichtung. Die Gewichtskraft $F_{G} = m \cdot g $ wirkt nach unten in negative x-Richtung. Der Pneumatik-Zyliner 
-	wirkt mit der Kraft  nach oben. Die Addition dieser KrÃ¤fte mit richtigem Vorzeichen ergibt die resultierende Beschleunigungskraft $F_{a} = m \cdot \ddot{x}$
-	in x-Richtung. jk
+	Nach dem Prinzip Aktio gleich Reaktio muss zu jedem Zeitpunkt ein Kräftegleichgewicht herrschen.
+	$x$ Entspricht der Höhe des Laderaums. Die positive x-Richtung zeigtnach oben. Die Feder wirkt mit der Kraft $F_{F} = K \cdot x$ nach oben. Der Dämpfer wirkt mit der Kraft 
+	$F_{R} = \mu \cdot \dot{x}$ entgegen der Bewegungsrichtung. Die Gewichtskraft $F_{G} = m \cdot g $ wirkt nach unten in negative x-Richtung. Der Pneumatik-Zylinder 
+	wirkt mit der Kraft  nach oben. Die Addition dieser Kräfte mit richtigem Vorzeichen ergibt die resultierende Beschleunigungskraft $F_{a} = m \cdot \ddot{x}$
+	in x-Richtung.
 
 	\begin{equation}
 		m \cdot \ddot{x} = F_{S} + K \cdot x - \mu \cdot \dot{x} - m \cdot g
 		\label{eq:Differenzengleichung}
 	\end{equation}
 
-	FÃ¼r diese Formel muss angenommen werden, dass sich die Feder fÃ¼r alle realistischen Auslenkungen $\Delta x$ im linearen elastischen Bereich befindet. Wenn das System stillsteht ist $F_{a} = 0$ 
+	Für diese Formel muss angenommen werden, dass sich die Feder für alle realistischen Auslenkungen $\Delta x$ im linearen elastischen Bereich befindet. Wenn das System stillsteht ist $F_{a} = 0$ 
 	und $F_{R} = 0$. Damit ist $F_{F} = F_{g}$. Diese Stelle wird nun als $x = 0$ definiert. Durch diesen Trick kann $F_{g}$ weggelassen werden. 
-	Um diese Gleichung in Simulink nachzubauen, wird sie nach ihrer hÃ¶chsten Ableitung $a = \ddot{x}$ augelÃ¶st. Somit erhÃ¤lt man (\ref{eq:DifferenzengleichungAufgeloest}).
+	Um die Gleichung in Simulink nachzubauen, wird sie nach ihrer höchsten Ableitung $a = \ddot{x}$ augelöst. Somit erhält man (\ref{eq:DifferenzengleichungAufgeloest}).
 
 	\begin{equation}
 		\ddot{x} = \frac{F_{S} + K \cdot x - \mu \cdot \dot{x} - m \cdot g}{m}
 		\label{eq:DifferenzengleichungAufgeloest}
 	\end{equation}
 
-	Durch das Integrieren von $\ddot{x}$ ergibt sich $\dot{x}$ und $x$.
+	Wie in Abbildung \ref{SimulinkStreckenModell} dargestellt, ergibt sich $\dot{x}$ und $x$ durch das Integrieren von $\ddot{x}$.
+
+	
+
+	$F_{g}$ und $F_{FederRuhe}$ heben sich eigentlich gegenseitig auf. Jedoch wurden sie in dem Simulink Modell gelassen,
+	um die Realität möglichst genau nachzubilden, und alle Freiheiten zu behalten.
+
+	\subsection{Analysieren des Systems}
+	Das Simulink Modell kann nun verwendet werden, um Das System zu analysieren.
+	Es soll die statische Verstärkung $K$, die Eigenfrequenz $\omega_{0}$ und die Dämpfung $d$ ermittelt werden.
+	Diese Werte lassen sich aus der Sprungantwort ablesen. Es wird ein Sprung von $F_{S} = \SI{1000}{N}$ 
+	auf das System gegeben. Die Sprungantwort sieht wie folgt aus.
 
 	\begin{figure}[h] 
 		\centering
-		   \includegraphics[width=0.7\textwidth]{Bilder/SimulinkStreckenModell.PNG}
-		\caption{Simulink Modell der Regelstrecke}
+		   \includegraphics[width=0.45\textwidth]{Bilder/Stepresponse1000N.png}
+		\caption{Sprungantwort auf 1000N}
 		\label{SimulinkStreckenModell}
-	  \end{figure}
+	\end{figure}
 	
-	\subsection{Formulierung der Frage}
+
+	Die statische Verstärkung ist definiert als: 
+
+	\begin{equation}
+		\begin{split}
+			K &=  \frac{Endwert ~ der ~ Sprungantwort}{Eingangssprung} = \frac{\SI{10,2}{mm}}{\SI{1000}{N}} \\
+			\\
+			&= \SI{10,2}{\frac{mm}{kN}} = \SI{1,02e-5}{ \frac{m}{N}}
+			\label{eq:statischeVerstaerkung}
+		\end{split}
+	\end{equation}
 	
-	In this step, a question is derived from an observation or curiosity. It is a question which usually asks for an explanation such as ``Which control strategy is the best to control the position of an elevator?'' The question and the background of this question is usually formulated in the \emph{Introduction} and/or ``Project targets''.
+
+	Der Endwert der Sprungantwort kann abgelesen werden, nachdem sich das System eingependelt hat.
+
+	Aus der Schwingung der Sprungantwort lässt sich die Eigenfrequenz ablesen. Für eine bessere Genauigkeit wird die Zeit $t$ für 
+	sechs Schwingungen mit einem Cursor gemessen. Die Eigenfrequenz berechnet sich dann wir folgt
+
+	\begin{equation}
+		T = \frac{t}{6} = \frac{\SI{5,783}{s}}{6} = \SI{0,964}{s}
+	\end{equation}
+	\begin{equation}
+		\omega_{0} = 2 \pi \cdot f = \frac{2 \pi}{T} = \frac{2 \pi}{\SI{0,964}{s}}  = \SI{6,52}{\frac{1}{s}}
+	\end{equation}
+
+	Mithilfe der Formel aus \cite[Tabelle 9.8]{karlsruherPT2Glied} lässt sich die dämpfung aus der Sprungantwort berechnen:
+
+	\begin{equation}
+		\begin{split}
+			d &= \frac{\ln\Big(\frac{\Delta h_{1}}{\Delta h_{2}}\Big)}{\sqrt{4 \cdot \pi ^2 + \ln ^2 \Big(\frac{\Delta h_{1}}{\Delta h_{2}}\Big)}} \\
+			\\
+			  &= \frac{\ln\Big(\frac{3,95}{2,1}\Big)}{\sqrt{4 \cdot \pi ^2 + \ln ^2 \Big(\frac{3,95}{2,1}\Big)}}
+			  = 0,1
+		\end{split}
+	\end{equation}
+
+	Mithilfe dieser Werte und der Annahme, dass es sich um ein lineares PT2 Glied handelt, könnte man nun die Übertragungsfunktion (\ref{eq:Uebertragungsfunktion}) im Laplace-Bereich bilden.
+
+	\begin{equation}
+		G(s) = \frac{x(s)}{F_{s}(s)} = \frac{K}{1 + 2 \cdot d \cdot T \cdot s + T^2 \cdot s^2}
+		\label{eq:Uebertragungsfunktion}
+	\end{equation}
+	Aber die brauchen wir jetzt eigentlich gar nicht mehr.
 	
+	
+	\subsection{Interpretation der Werte}
+	Aus der statischen Verstärkung $K$ ist zu erkennen, dass eine Große Kraft nötig ist, um die Ladefläche zu bewegen. Mit der Formel (\ref*{eq:statischeVerstaerkung}) kann ausgerechnet werden, welche Kraft nötig 
+	ist, um $x = \SI{1}{m}$ zu erreichen.
+
+	\begin{equation}
+		F_{s}= \frac{x_{max}}{K}  = \frac{1}{\SI{1,02e-5}{ \frac{m}{N}}} = \SI{98}{kN}
+	\end{equation}
+
+	Der Laderaum soll mit vier einfachwirkenden Hydraulikzylindern gesteuert werden. 
+	Ein passender Zylinder sollte einen Hub von circa $\SI{1,5}{m}$ haben.
+	Die vier Zylinder sollten eine Gemeinsame Kraft von mindestens $F = \SI{50}{kN}$ aufweisen.
+	Es werden Zylinder ähnlich dem in \cite{Zylinder} zum Einsatz kommen.
+	Jeder Zylinder hat einen Hub von $\SI{1,5}{m}$
+	und eine Kraft von $F = \SI{500}{kN}$. Damit ist das Stellglied auf eine Maximalkraft von 
+	\begin{equation}
+		F_{s, max} = 4 \cdot \SI{500}{kN} = \SI{2000}{kN}
+	\end{equation}
+	begrenzt.Es bleibt also noch genug Kraft übrig, um Regeln zu können.
+	
+	
+
+
 	\subsection{Hyphothese}
 	
 	A hypothesis is a conjecture to which you arrive by following logical and theoretical steps. The necessary theory involved in your questioning is written in the section \emph{Theory}.
@@ -106,7 +197,7 @@
 			\hline
 			\bfseries Nr. & \bfseries English & \bfseries German\\
 			\hline
-			I & Introduction & EinfÃ¼hrung\\
+			I & Introduction & Einführung\\
 			II & Project targets & Projektziele \\
 			III & Theory & Theorie \\
 			IV & Methodology (Controller design) & Methodik (Reglerentwurf)\\
