@@ -121,7 +121,7 @@
 		T = \frac{t}{6} = \frac{\SI{5,783}{s}}{6} = \SI{0,964}{s}
 	\end{equation}
 	\begin{equation}
-		\omega_{0} = 2 \pi \cdot f = \frac{2 \pi}{T} = \frac{2 \pi}{\SI{0,964}{s}}  = \SI{6,52}{\frac{1}{s}}
+		\omega_{0} = 2 \pi \cdot f = \frac{2 \pi}{T} = \frac{2 \pi}{\SI{0,964}{s}}  = \SI{6,52}{\frac{rad}{s}}
 	\end{equation}
 
 	Mithilfe der Formel aus \cite[Tabelle 9.8]{karlsruherPT2Glied} lässt sich die dämpfung aus der Sprungantwort berechnen:
@@ -157,19 +157,90 @@
 	Die vier Zylinder sollten eine Gemeinsame Kraft von mindestens $F = \SI{50}{kN}$ aufweisen.
 	Es werden Zylinder ähnlich dem in \cite{Zylinder} zum Einsatz kommen.
 	Jeder Zylinder hat einen Hub von $\SI{1,5}{m}$
-	und eine Kraft von $F = \SI{500}{kN}$. Damit ist das Stellglied auf eine Maximalkraft von 
+	und eine Kraft von $F = \SI{1000}{kN}$. Damit ist das Stellglied auf eine Maximalkraft von 
 	\begin{equation}
-		F_{s, max} = 4 \cdot \SI{500}{kN} = \SI{2000}{kN}
+		F_{s, max} = 4 \cdot \SI{1000}{kN} = \SI{4000}{kN}
 	\end{equation}
 	begrenzt.Es bleibt also noch genug Kraft übrig, um Regeln zu können.
+
+	\section{Reglerentwurf}
+
+	\subsection{Digitalisierung Antialiasing}
+	Die Höhe des Laderaums wird durch einen Sensor ausgelesen. Das Signal dieses Sensors soll digitalisiert werden.
+	Für die digitalisierung wird ein Sample and hold Glied benutzt. Vor dieses Glied muss ein Anti aliasing Filter eingebaut werden.
+	Nun soll die Samplefrequenz und die Grenzfrequenz festgellegt werden. Im letzten Abschnitt wurde die Eigenfrequenz bereits zu $\SI{6,52}{\frac{rad}{s}}$ bestimmt.
+	Die Abtastrate sollte nach \cite{NotholtVorlesung5} das zehn bis zwanzigfache der schnellsten
+	Zeitkonstanten betragen. 
+
+	\begin{equation}
+		f_{s} = \frac{\omega_{0}}{2 \pi} \cdot 20 = \SI{20,75}{Hz}
+	\end{equation}
+
+	Eine Abtastfrequenz von $\SI{20,75}{Hz}$ reicht also aus um das System vernünftig regeln zu können. Diese Frequenz ist recht gering.
+	Selbst die günstigsten Analog to Digital Converter (ADC) erreichen viel höhere Abtastraten. 
+	Generell gilt, dass eine geringere Abtastfrequenz eine erhöhte Verzögerung des Signals nach sich zieht. Eine erhöhte Verzugszeit $T_{u}$
+	erschwert das Regeln. Daher sollte die Abtastfrequenz möglichst hoch gewählt werden. Solange die Auflösung des ADC nicht darunter leidet.
+	Falls der verwendete Sensor hochfrequente Störungen hat, welche größer als eine Stufe des ADC sind, kann versucht werden diese Störungen durch 
+	einen Tiefpassfilter herauszufiltern.
+
+	In der Simulation ist der x-Wert Störungsfrei, also könnte die Abtastfrequenz beliebig hoch gewählt werden.
+	Für diesen Versuch wird sich aber auf eine relativ moderate Frequenz von 
 	
+	\begin{equation}
+		f_{s} = \SI{10}{kHz}
+	\end{equation}
+
+	beschränkt.
+
+	Da es wie schon erwähnt in dieser Simulation keine Störungen gibt, wäre kein Anti-Aliasing-Filter notwendig. Er sollte in diesem Fall sogar vermieden werden,
+	da er eine Verzugszeit mit sich bringt.
+	Der Anti-Aliasing-Filter ist Teil der Anforderungen also wird nachfolgend trotzdem einer verwendet.
+	Die Aufgabe des Anti-Aliasing-Filter ist es die Einhaltung des Nyquist-Shannon-Abtasttheorems sicherzustellen. Der Tiefpass soll alle Frequenzen, 
+	größer als $f_{S} / 2$ herausfiltern. Um dies sicherzustellen wird die Grenzfrequenz auf
+
+	\begin{equation}
+		f_{G} = \frac{f_{S}}{4} = \SI{2,5}{kHz} 
+	\end{equation}
+	
+	festgellegt. Diese doppelte Sicherheit ist möglich, da bei der Abtastfrequenz viel Spielraum gelassen wurde. Es ist zu empfehlen einen Filter höherer Ordnung zu 
+	wählen. Für diese Arbeit wird einfachheitshalber ein Tiefpass 1. Ordnung verwendet.
+	Für die Zeitkonstante des Filters ergibt sich:
+
+	\begin{equation}
+		T_{F} =  \frac{1}{f_{G}} = \frac{1}{\SI{2.5}{kHz}} = \SI{0,4}{ms}
+	\end{equation}
+
+
+	\begin{figure*}[hbt] 
+		\centering
+		   \includegraphics[width=1.0\textwidth]{Bilder/geschlosseneRegelstrecke.PNG}
+		\caption{geschlossene Regelstrecke}
+		\label{geschlosseneRegelstrecke}
+	\end{figure*}
+
+	\subsection{Regler Parametrisierung}
+	
+	Für diese Regelstrecke ist das Wendetangentenverfahren nicht geeignet.
+	Es wird das Stabilitatsrandverfahren angewendet.
+	Dazu wird der Regelkreis mit einem reinen P-Regler geschlossen (Abb. \ref{geschlosseneRegelstrecke}) und die Verstärkung so lange erhöht bis ein Sprung 
+	am Eingang zu einer gleichförmigen Dauerschwingungen am Ausgang führt. Anhand der eingestellten Verstärkung und der	
+	Periodendauer der Schwingungen können dann die gesuchten 
+	Regelparameter abgeleitet werden.
+
+	Es wird ein Sollwertsprung auf eine Mittlere Höhe von $x = \SI{0,5}{m}$ eingestellt. Bei $K_{p, Krit} = \SI{6,668e6}{} $ schwingt das System gleichmäßig mit konstanter Amplitude.
+	Dies ist der kleinste P-Wert, bei dem ein solches Verhalten festzustellen ist.
 	
 
 
-	\subsection{Hyphothese}
-	
-	A hypothesis is a conjecture to which you arrive by following logical and theoretical steps. The necessary theory involved in your questioning is written in the section \emph{Theory}.
-	
+
+
+
+
+
+
+
+
+
 	\subsection{Prediction}
 	
 	In this step you define the possible outcomes of your hypothesis and show how do you arrive to them. In engineering this would be the design process and is usually presented in the section regarding \emph{Methodology}.

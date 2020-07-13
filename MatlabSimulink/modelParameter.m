@@ -12,4 +12,14 @@ F_FederRuhe = m_Frachtraum * g; %N
 
 %%extra??
 Ladung = 0; %kg
-MaxActuatorForce = 100 *1000; %N
+
+
+
+%%Filter und ADC
+T_Grenz = 4e-4;  %Grenzfrequenz Lowpass filter; Zeitkonstante Lowpass 1.Ordnung
+f_Sample = 10e3; 
+
+
+%%Stellglied
+MaxActuatorForce = 2e6;
+MinActuatorForce = 0;
