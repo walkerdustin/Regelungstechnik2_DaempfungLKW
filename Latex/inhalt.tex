@@ -144,7 +144,7 @@
 	Aber die brauchen wir jetzt eigentlich gar nicht mehr.
 	
 	
-	\subsection{Interpretation der Werte}
+	\subsection{Interpretation der Werte}\label{subSec:Interpraetation}
 	Aus der statischen Verstärkung $K$ ist zu erkennen, dass eine Große Kraft nötig ist, um die Ladefläche zu bewegen. Mit der Formel (\ref*{eq:statischeVerstaerkung}) kann ausgerechnet werden, welche Kraft nötig 
 	ist, um $x = \SI{1}{m}$ zu erreichen.
 
@@ -161,11 +161,13 @@
 	\begin{equation}
 		F_{s, max} = 4 \cdot \SI{1000}{kN} = \SI{4000}{kN}
 	\end{equation}
-	begrenzt.Es bleibt also noch genug Kraft übrig, um Regeln zu können.
+	begrenzt. Es bleibt also noch genug Kraft übrig, um Regeln zu können.
+	In der Praxis sollte die Kraft so beschränkt werden, dass die Fracht eine maximal Beschleunigung von circa $0,5g$ erfährt.
+	Für sie Simulation wird keine Beschränkung für das Stellglied festgellegt.
 
 	\section{Reglerentwurf}
 
-	\subsection{Digitalisierung Antialiasing}
+	\subsection{Digitalisierung und Antialiasing}
 	Die Höhe des Laderaums wird durch einen Sensor ausgelesen. Das Signal dieses Sensors soll digitalisiert werden.
 	Für die digitalisierung wird ein Sample and hold Glied benutzt. Vor dieses Glied muss ein Anti aliasing Filter eingebaut werden.
 	Nun soll die Samplefrequenz und die Grenzfrequenz festgellegt werden. Im letzten Abschnitt wurde die Eigenfrequenz bereits zu $\SI{6,52}{\frac{rad}{s}}$ bestimmt.
@@ -221,7 +223,7 @@
 	\subsection{Regler Parametrisierung}
 	
 	Für diese Regelstrecke ist das Wendetangentenverfahren nicht geeignet.
-	Es wird das Stabilitatsrandverfahren angewendet.
+	Es wird das Stabilitätsrandverfahren angewendet.
 	Dazu wird der Regelkreis mit einem reinen P-Regler geschlossen (Abb. \ref{geschlosseneRegelstrecke}) und die Verstärkung so lange erhöht bis ein Sprung 
 	am Eingang zu einer gleichförmigen Dauerschwingungen am Ausgang führt. Anhand der eingestellten Verstärkung und der	
 	Periodendauer der Schwingungen können dann die gesuchten 
@@ -229,7 +231,154 @@
 
 	Es wird ein Sollwertsprung auf eine Mittlere Höhe von $x = \SI{0,5}{m}$ eingestellt. Bei $K_{p, Krit} = \SI{6,668e6}{} $ schwingt das System gleichmäßig mit konstanter Amplitude.
 	Dies ist der kleinste P-Wert, bei dem ein solches Verhalten festzustellen ist.
+	Die Sprungantwort des geschlossen Systems ist in \ref{geschlosseneRegelstreckeP} zu sehen.
+
+	\begin{figure}[h] 
+		\centering
+		   \includegraphics[width=0.45\textwidth]{Bilder/schwingendeStepresponse.png}
+		\caption{Sprungantwort der mit mit $K_{P, krit}$ geschlossenen Regelstrecke}
+		\label{geschlosseneRegelstreckeP}
+	\end{figure}
+
+	Das Ausgangssignal schwingt dabei mit einer Periodendauer von
+	$T_{U} = \SI{116}{ms}$. Aus diesen Werten können nun die einzelnen 
+	Regelparameter berechnet werden.
+	Nach Ziegler-Nichols berechnen sich die Parameter für
+	einen PID-Regler in parallel Form nach Tabelle \ref{tbl:PID}.
+
+
+    
+
+	\begin{table}[hb]
+
+	\normalsize
+
+	\caption{Parameter-Berechnung nach Ziegler-Nichols mit dem Stabilitätsrandverfahren}
+
+	\label{tbl:PID}
+
+	\centering
+
+	\begin{tabular}{c|c|c|c}
+
+	& $K_p$ & $K_i$ & $K_d$\\
+
+	\hline
+
+	PID & $0.6 \cdot K_{pKrit}$ & $K_p/~(0.5 \cdot T_U)$ & $K_p \cdot 0.12 \cdot T_U$\\
+
+	\end{tabular}
+
+	\end{table}
+
 	
+	Daraus ergeben sich die folgenden Regler-Parameter:
+
+	\begin{equation}
+		K_{p} = 0.6 \cdot K_{pKrit} = 0.6 \cdot \SI{6,668e6}{} = \SI{4,00e6}{}
+	\end{equation}
+
+	\begin{equation}
+		K_{i} = K_p/~(0.5 \cdot T_U) =   \frac{\SI{6,668e6}{} } {0.5 \cdot \SI{116}{ms}} = \SI{115e6}{}
+	\end{equation}
+
+	\begin{equation}
+		K_{d} = \SI{6,668e6}{} \cdot 0.12 \cdot \SI{116}{ms} =\SI{92,8e3}{}
+	\end{equation}
+
+	Die berechneten Werte müssen nicht zu zeitdiskreten Parametern umgerechnet werden, da Simulink diese Umrechnung übernimmt.
+	Die Sprungantwort mit den berechneten Parametern ist in Abbildung \ref{geregelteSprungantwortSchwingend} zu sehen.
+
+
+
+	\begin{figure}[h] 
+		\centering
+		   \includegraphics[width=0.45\textwidth]{Bilder/geregelteStepresponseSchwingend.png}
+		\caption{mit berechneten Parametern geregelte Sprungantwort}
+		\label{geregelteSprungantwortSchwingend}
+	\end{figure}
+
+
+
+	\section{Validierung und Verbesserungen}
+	In diesem Abschnitt wird die Regelung mit den berechneten
+	Parametern getestet und die Ergebnisse analysiert. Im
+	Anschluss werden die Parameter so optimiert, dass die
+	geforderten Projektziele erreicht werden.
+
+	Die in Abbildung \ref{geregelteSprungantwortSchwingend} dargestellte regelt recht schnell auf die Wunschhöhe ein.
+	Jedoch erfüllt dieses Verhalten in keinster Weise die Anforderungen.
+
+	\begin{itemize}
+		\item Der Überschwinger ist zu groß
+		\item Das System schwingt zu stark
+		\item Die Beschleunigung ist nicht human
+	\end{itemize}
+
+	Da das Modell als Differenzialgleichung aufgebaut ist, und nicht als eine einzelne Übertragungsfunktion, kann in der Simulation auch die Beschleunigung gemessen werden.
+	Die Laderaum wird mit bis zu $45g $ beschleunigt.
+	Dies ist inakzeptabel.
+
+	\subsection{Verbesserung durch mauelle Veränderung der Parameter}
+	Optimalerweise sollte ein Aperiodische Regelverhalten erreicht werden. Ein langsameres einregeln ist nicht nur erlaubt, sogar erwünscht,
+	da die Ladung nicht durch zu große Beschleunigung belastet werden soll.
+	Die Annahme ist nun, dass dieses Verhalten durch ein erhöhen des D-Anteils erreicht werden kann.
+	Dafür wird schrittweise der D-Anteil manuell erhöht und der Effekt analysiert.
+
+	Der D-Anteil wird um den Faktor 10 erhöht.
+
+	\begin{figure}[h] 
+		\centering
+		   \includegraphics[width=0.45\textwidth]{Bilder/D-Anteilx10.png}
+		\caption{geregelte Sprungantwort mit erhöhtem D-Anteil}
+		\label{geregelteSprungantwortDx10}
+	\end{figure}
+
+	Die Sprungantwort in \ref{geregelteSprungantwortDx10} sieht schon sehr gut aus.
+	Der Überschwinger ist maximal und die Wunschwert ist so gut wie sofort erreicht.
+	Jedoch wird auch mit diesen Parametern wieder eine Beschleunigung von bis zu $200.000 g$ erreicht.
+	Auch sollte erwähnt werden, dass die eingestellten Parameter des "Simulink-Solver" für eine solch schnelle Regelung ungeeignet sind.
+
+	\begin{itemize}
+		\item Solver-Type:   ~~~~~   Fixed-step
+		\item Fixed-step size: ~~ $\SI{0,5e-4}{s}$	
+	\end{itemize}
+
+
+	Mit diesen Parametern wird der Wunschwert in 18 Simulations-Schritten erreicht.
+
+	\subsection{Limitierung des Outputs}
+
+	Um die Beschleunigung zu limitieren soll die Kraft $F_{s}$ so begrenzt werden, dass die maximale Beschleunigung $0,5 g$ nicht überschreitet.
+
+	\begin{equation}
+		F_{s, max} = F_{a} = m \cdot a_{max} = \SI{2300}{kg} \cdot \SI{5}{\frac{m}{s^2}} = \SI{11,5}{kN}
+	\end{equation}
+
+	Dieser Wert liegt aber unter dem in \ref{subSec:Interpraetation} berechneten Wert für die minimale Kraft.
+	Die Kraft wird also auf $F_{s, max} = \SI{100}{kN}$ festgellegt.
+	Da es sich umn einen Einfach wirkenden Zylinder handelt wird $F_{s, min}$ auf $\SI{0}{kN} $ festgelegt.
+	Um den Anti-windup Effekt zu verhindern wird im PID-Regler die "Anti-windup Methode" "clamping" aktiviert.
+
+
+	Das System erreicht zwar die gewünschte Position, aber die 
+	Beschleunigung ist zu groß und das System schwingt enorm. Das limitieren der Stellgröße verändert die dynamik des Systems drastisch.
+	
+	
+	Das Stabilitätsrandverfahren wird also erneut angewandt. 
+	Es stellt sich heraus, dass sich  $K_{p, Krit}$ und $T_{U}$ hat sich nicht verändert haben.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
