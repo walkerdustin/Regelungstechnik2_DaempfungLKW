@@ -306,7 +306,7 @@ Die Sprungantwort mit den berechneten Parametern ist in Abbildung \ref{geregelte
 \begin{figure}[h] 
 	\centering
 		\includegraphics[width=0.45\textwidth]{Bilder/geregelteStepresponseSchwingend.png}
-	\caption{mit berechneten Parametern geregelte Sprungantwort}
+	\caption{mit berechneten Parametern geregelte Sprungantwort}    
 	\label{geregelteSprungantwortSchwingend}
 \end{figure}
 
@@ -367,19 +367,14 @@ Um die Beschleunigung zu limitieren soll die Kraft $F_{s}$ so begrenzt werden, d
 \end{equation}
 
 Dieser Wert liegt aber unter dem in \ref{subSec:Interpraetation} berechneten Wert für die minimale Kraft.
-Die Kraft wird also auf $F_{s, max} = \SI{100}{kN}$ festgellegt.
-Da es sich umn einen Einfach wirkenden Zylinder handelt wird $F_{s, min}$ auf $\SI{0}{kN} $ festgelegt.
-Um den Anti-windup Effekt zu verhindern wird im PID-Regler die \glqq Anti-windup Methode\grqq ~ \glqq clamping\grqq ~ aktiviert.
+Für die maximal zu erreichende Höhe ergibt sich:
 
+\begin{equation}
+	x_{max} =  \frac{F_{s, max}}{K_{Feder}} = \frac{\SI{11,5}{kN}}{\SI{98,1}{\frac{kN}{m}}} = \SI{0,12}{m}
+\end{equation}
 
-Das System erreicht zwar die gewünschte Position, aber die 
-Beschleunigung ist zu groß und das System schwingt enorm. Das limitieren der Stellgröße verändert die dynamik des Systems drastisch.
-
-
-Das Stabilitätsrandverfahren wird also erneut angewandt. 
-Es stellt sich heraus, dass sich  $K_{p, Krit}$ und $T_{U}$ hat sich nicht verändert haben.
-
-
+Als Ziel der Regelung ist aber festgellegt, dass eine Höhe von $x = \SI{1}{m}$ erreicht werden soll. Die berechnete Kraft 
+$F_{s, max}$ reicht also nicht aus.
 
 
 \subsection{Wandernder Arbeitspunkt}
@@ -390,7 +385,7 @@ auch nur annähernd an der gewünschen Höhe zu erreichen.
 
 Nun ist mir eine Idee gekommen.
 Die Beschleunigung des Laderaums und die Überwindung der Feder-Rückstellkraft kann unabhängig voneinander sein.
-In jedem beliebigen Arbeitspunkt kann die Kraft der Feder berechnet werden, und auf die Stellgröße oben drauf gerechnet werden.
+In jedem beliebigen Arbeitspunkt kann die Kraft der Feder berechnet werden, und auf die Stellgröße addiert werden.
 So kann sich der Regler auf dei Beschleunigung der Masse konzentrieren.
 
 Das Simulink Modell wird, wie in Abbildung \ref{wandernderArbeitspunkt} dargestellt, erweitert:
